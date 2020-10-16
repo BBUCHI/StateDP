@@ -12,7 +12,6 @@ public:
     int y_;
     State *state_;
 
-    void show();
     void init(std::vector<std::array<int,2>> goal);
 
     ModuleTest(int x, int y);
@@ -34,8 +33,4 @@ void ModuleTest::init(std::vector<std::array<int,2>> goal){
     if(state_->HasConverged(x_, y_, goal)){
         
     }
-}
-
-void ModuleTest::show(){
-    std::cout << "Module("<<x_<<", "<<y_<<")\n";
 }

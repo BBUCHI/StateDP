@@ -5,6 +5,7 @@
 
 class Context;
 
+//Etat du module
 class State {
  protected:
   Context *context_;
@@ -28,6 +29,7 @@ class State {
   virtual bool RunTrans(State *state){return false;};
 };
 
+//Context de la simulation
 class Context {
  private:
   State *state_;
@@ -41,7 +43,6 @@ class Context {
   }
 
   void TransitionTo(State *state) {
-    std::cout << "Context: Transition to " << typeid(*state).name() << ".\n";
     if (this->state_ != nullptr)
       delete this->state_;
     this->state_ = state;
@@ -53,6 +54,7 @@ class Context {
   }
 };
 
+//Etat "Not Set"
 class StNotSet : public State {
  public:
   void Handle() override{};
@@ -62,30 +64,26 @@ class StNotSet : public State {
     };
 };
 
+//Etat "Waiting"
 class StWait : public State {
  public:
   void Handle() override {};
 };
 
+//Etat "Goal"
 class StGoal : public State {
  public:
   void Handle() override {};
 };
 
+//Etat "Blocked"
 class StBlocked : public State {
  public:
   void Handle() override {};
 };
 
+//Etat "Ask to move"
 class StAskToMove : public State {
  public:
   void Handle() override {};
 };
-
-int CodeTest() {
-  Context *context = new Context(new StNotSet);
-  std::cout << "Request : ...\n";
-  context->Request();
-  delete context;
-  return 0;
-}
