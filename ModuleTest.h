@@ -10,7 +10,7 @@ private:
 public:
     int x_;
     int y_;
-    State *state_;
+    Context *context_;
 
     void init(std::vector<std::array<int,2>> goal);
 
@@ -22,15 +22,9 @@ ModuleTest::ModuleTest(int x, int y)
 {
     x_ = x;
     y_ = y;
-    state_ = new StNotSet();
+    context_ = new Context();
 }
 
 ModuleTest::~ModuleTest()
 {
-}
-
-void ModuleTest::init(std::vector<std::array<int,2>> goal){
-    if(state_->HasConverged(x_, y_, goal)){
-        
-    }
 }

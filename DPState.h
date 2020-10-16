@@ -1,11 +1,12 @@
 #include <iostream>
 #include <typeinfo>
+#include <algorithm>
 #include <array>
 #include <vector>
 
 class Context;
 
-//Etat du module
+//Abstraction d'un état du module
 class State {
  protected:
   Context *context_;
@@ -18,38 +19,32 @@ class State {
     this->context_ = context;
   }
 
+  Context* get_context(){
+    return context_;
+  }
+
   virtual void Handle() = 0;
-
-  bool HasConverged(int x, int y, std::vector<std::array<int,2>> goal){
-    return false;
-  };
-
-  virtual bool ClearanceTrans(State *state){return false;};
-
-  virtual bool RunTrans(State *state){return false;};
+  virtual void Start();
 };
 
-//Context de la simulation
+//Etat du module dans son contexte
 class Context {
  private:
   State *state_;
 
  public:
-  Context(State *state) : state_(nullptr) {
-    this->TransitionTo(state);
+  Context(){
+    state_ = new StNotSet(this);
   }
   ~Context() {
     delete state_;
   }
 
-  void TransitionTo(State *state) {
-    if (this->state_ != nullptr)
-      delete this->state_;
-    this->state_ = state;
-    this->state_->set_context(this);
+  void set_state(State *state){
+    state_ = state;
   }
 
-  void Request() {
+  void Handle() {
     this->state_->Handle();
   }
 };
@@ -57,16 +52,21 @@ class Context {
 //Etat "Not Set"
 class StNotSet : public State {
  public:
-  void Handle() override{};
-
-    bool ClearanceTrans(State *state) override{
-        return false;
-    };
+  StNotSet(Context *context)
+  {
+    set_context(context);
+  }
+  
+  void Handle() override{std::cout<<"NOT SET\n";};
+  void Start() override{
+    get_context()->set_state(new StWait(get_context()));
+  };
 };
 
 //Etat "Waiting"
 class StWait : public State {
  public:
+  StWait(Context *context){set_context(context);}
   void Handle() override {};
 };
 
@@ -87,3 +87,4 @@ class StAskToMove : public State {
  public:
   void Handle() override {};
 };
+
