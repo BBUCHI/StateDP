@@ -1,8 +1,8 @@
-
 #include <iostream> 
 #include <vector> 
 #include <array> 
 #include "ModuleTest.h"
+//#include "DPState.h"
 
 using namespace std;
 
@@ -24,12 +24,10 @@ int main() {
   ModuleTest *m2 = new ModuleTest(0,1);
   ModuleTest *m3 = new ModuleTest(1,1);
 
-  cout << "Start...\n";
-  m1->context_->Handle();
-  m2->context_->Handle();
-  m3->context_->Handle();
-  cout << "...End";
-
+  m1->context_->Request();
+  m1->context_->Request();
+  m1->context_->Request();
+  cout << "FIN.";
   return 0;
 }
 

@@ -12,6 +12,7 @@ class State {
   Context *context_;
 
  public:
+  State(){}
   virtual ~State() {
   }
 
@@ -23,8 +24,7 @@ class State {
     return context_;
   }
 
-  virtual void Handle() = 0;
-  virtual void Start();
+  virtual void Start(){};
 };
 
 //Etat du module dans son contexte
@@ -33,9 +33,8 @@ class Context {
   State *state_;
 
  public:
-  Context(){
-    state_ = new StNotSet(this);
-  }
+  Context();
+
   ~Context() {
     delete state_;
   }
@@ -44,29 +43,45 @@ class Context {
     state_ = state;
   }
 
-  void Handle() {
-    this->state_->Handle();
+  void Request() {
+    this->state_->Start();
   }
-};
 
-//Etat "Not Set"
-class StNotSet : public State {
- public:
-  StNotSet(Context *context)
-  {
-    set_context(context);
-  }
-  
-  void Handle() override{std::cout<<"NOT SET\n";};
-  void Start() override{
-    get_context()->set_state(new StWait(get_context()));
-  };
 };
 
 //Etat "Waiting"
 class StWait : public State {
  public:
-  StWait(Context *context){set_context(context);}
+  StWait(Context *context){
+    set_context(context);
+  }
+  
+  void Start() override{
+    //get_context()->set_state(new StNotSet(get_context()));
+    std::cout << "Starting (Waiting)\n";
+  };
+};
+
+//Etat "Not Set"
+class StNotSet : public State {
+ public:
+  StNotSet(Context *context){
+    set_context(context);
+  }
+  
+  void Start() override{
+    get_context()->set_state(new StWait(get_context()));
+    std::cout << "Starting (Not set)\n";
+  };
+};
+
+/*
+//Etat "Waiting"
+class StWait : public State {
+ public:
+  StWait(Context *context){
+    //set_context(context);
+  }
   void Handle() override {};
 };
 
@@ -88,3 +103,8 @@ class StAskToMove : public State {
   void Handle() override {};
 };
 
+*/
+
+Context::Context(){
+    state_ = new StNotSet(this);
+  };
